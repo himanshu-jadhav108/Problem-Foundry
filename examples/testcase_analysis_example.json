@@ -1,0 +1,107 @@
+{
+  "problem_summary": "Analyzed problem domain with 5 primary risk profiles: off_by_one, overflow, binary_search_failure, graph_corner_cases, maximum_boundary.",
+  "identified_risk_categories": [
+    "off_by_one",
+    "overflow",
+    "binary_search_failure",
+    "graph_corner_cases",
+    "adversarial_sorting",
+    "hash_collision",
+    "recursion_depth",
+    "duplicate_handling",
+    "maximum_boundary",
+    "empty_input"
+  ],
+  "ranked_test_cases": [
+    {
+      "id": "tc_off_by_one",
+      "input_data": "2\n10 20",
+      "expected_output": "30",
+      "bug_category": "off_by_one",
+      "probability_score": 0.92,
+      "explanation": "Tests 2-element array boundary where loop condition <= vs < causes missing end element.",
+      "historical_bug_weight": 0.95
+    },
+    {
+      "id": "tc_binary_search_missing",
+      "input_data": "5\n1 3 5 7 9\nTarget: 4",
+      "expected_output": "-1",
+      "bug_category": "binary_search_failure",
+      "probability_score": 0.87,
+      "explanation": "Target element is absent between existing elements, testing lower_bound vs upper_bound boundary.",
+      "historical_bug_weight": 0.90
+    },
+    {
+      "id": "tc_overflow_limit",
+      "input_data": "3\n1000000000 1000000000 1000000000",
+      "expected_output": "3000000000",
+      "bug_category": "overflow",
+      "probability_score": 0.87,
+      "explanation": "Input values exceed 32-bit signed integer limits (2^31-1), exposing 32-bit int truncation.",
+      "historical_bug_weight": 0.92
+    },
+    {
+      "id": "tc_graph_self_loop",
+      "input_data": "3 3\n1 1\n1 2\n2 3",
+      "expected_output": "2",
+      "bug_category": "graph_corner_cases",
+      "probability_score": 0.84,
+      "explanation": "Graph with self-loop (1 -> 1) and disconnected components to break cycle detection.",
+      "historical_bug_weight": 0.88
+    },
+    {
+      "id": "tc_anti_quicksort",
+      "input_data": "1000\n1000 999 998 ... 1",
+      "expected_output": "1",
+      "bug_category": "adversarial_sorting",
+      "probability_score": 0.80,
+      "explanation": "Strictly decreasing array designed to trigger worst-case O(N^2) behavior in unrandomized Quicksort.",
+      "historical_bug_weight": 0.85
+    },
+    {
+      "id": "tc_hash_anti_test",
+      "input_data": "4\n0 1073741824 2147483648 3221225472",
+      "expected_output": "4",
+      "bug_category": "hash_collision",
+      "probability_score": 0.76,
+      "explanation": "Powers of 2 and hash table bucket collision inputs designed to degrade dict lookups from O(1) to O(N).",
+      "historical_bug_weight": 0.82
+    },
+    {
+      "id": "tc_linear_recursion_depth",
+      "input_data": "1000\n1 2\n2 3 ... 999 1000",
+      "expected_output": "1000",
+      "bug_category": "recursion_depth",
+      "probability_score": 0.73,
+      "explanation": "Deep linear graph path causing RecursionError / stack overflow in un-memoized DFS.",
+      "historical_bug_weight": 0.80
+    },
+    {
+      "id": "tc_all_duplicates",
+      "input_data": "5\n7 7 7 7 7",
+      "expected_output": "0",
+      "bug_category": "duplicate_handling",
+      "probability_score": 0.70,
+      "explanation": "Array consisting entirely of identical elements to trigger infinite loops or zero-variance bugs.",
+      "historical_bug_weight": 0.78
+    },
+    {
+      "id": "tc_max_boundary",
+      "input_data": "100000\n1000 1000 ...",
+      "expected_output": "100000000",
+      "bug_category": "maximum_boundary",
+      "probability_score": 0.67,
+      "explanation": "Maximum constraint size N=10^5 to test Time Limit Exceeded (TLE) against O(N^2) algorithms.",
+      "historical_bug_weight": 0.75
+    },
+    {
+      "id": "tc_empty_min_input",
+      "input_data": "1\n0",
+      "expected_output": "0",
+      "bug_category": "empty_input",
+      "probability_score": 0.61,
+      "explanation": "Single element N=1 minimal input condition.",
+      "historical_bug_weight": 0.70
+    }
+  ]
+}

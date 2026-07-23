@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Dict, Any
 from app.schemas.problem import ExistingProblemTestCaseRequest, TestCase
+from app.schemas.testcase_analysis import ProblemAnalysisInput, AnalysisReport
 from app.providers.factory import ProviderFactory
 from app.agents import TestCaseAgent
+from app.services.testcase_analyzer import TestCaseAnalyzerEngine
 
 router = APIRouter(prefix="/api/testcases", tags=["TestCases"])
 
@@ -45,3 +47,14 @@ async def rank_testcases(cases: List[TestCase]):
     # Sort descending by bug_detection_rank
     cases.sort(key=lambda x: x.bug_detection_rank or 0.0, reverse=True)
     return cases
+
+@router.post("/analyze", response_model=AnalysisReport)
+async def analyze_problem_vulnerabilities(input_data: ProblemAnalysisInput):
+    """
+    Specialized AI Module: Identifies 10 critical bug risk categories (off-by-one, overflow, 
+    duplicate handling, empty input, max boundary, recursion depth, hash collision, adversarial sorting,
+    graph corner cases, binary search failure) and outputs a ranked testsuite.
+    """
+    provider = ProviderFactory.get_provider()
+    analyzer = TestCaseAnalyzerEngine(provider)
+    return await analyzer.analyze_and_rank(input_data)
