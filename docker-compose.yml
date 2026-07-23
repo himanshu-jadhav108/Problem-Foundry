@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: problem_foundry_db
+    environment:
+      POSTGRES_USER: foundry_user
+      POSTGRES_PASSWORD: foundry_password
+      POSTGRES_DB: problem_foundry
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -u foundry_user -d problem_foundry"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: problem_foundry_chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: problem_foundry_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://foundry_user:foundry_password@postgres:5432/problem_foundry
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      - MODEL_PROVIDER=ollama
+      - MODEL_NAME=qwen2.5-coder:7b
+      - API_BASE=http://host.docker.internal:11434
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  chroma_data:
