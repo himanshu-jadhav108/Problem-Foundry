@@ -1,0 +1,40 @@
+{
+  "problem_id": "prob_binary_search_boundary_bug",
+  "verification_status": "FAILED",
+  "total_tests_run": 10,
+  "passed_tests": 8,
+  "failed_tests": 2,
+  "nondeterministic_failures": 0,
+  "coverage_percentage": 80.0,
+  "runtime_stats_ms": {
+    "avg": 1.8,
+    "min": 0.9,
+    "max": 3.4
+  },
+  "memory_stats_mb": {
+    "avg": 12.5
+  },
+  "brute_vs_optimal_match": false,
+  "detailed_failures": [
+    {
+      "test_index": 4,
+      "reason": "Output mismatch: brute output '3' != optimal output '2'",
+      "input_data": "5\n1 3 5 7 9\nTarget: 7",
+      "brute_output": "3",
+      "optimal_output": "2",
+      "brute_stderr": "",
+      "optimal_stderr": "",
+      "is_nondeterministic": false
+    },
+    {
+      "test_index": 9,
+      "reason": "Optimal execution failed (Error: IndexError: list index out of range)",
+      "input_data": "1\n100\nTarget: 100",
+      "brute_output": "0",
+      "optimal_output": "",
+      "brute_stderr": "",
+      "optimal_stderr": "Traceback (most recent call last):\n  File \"script.py\", line 8, in solve\n    ans = arr[high + 1]\nIndexError: list index out of range",
+      "is_nondeterministic": false
+    }
+  ]
+}
